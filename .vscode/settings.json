@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "init.h": "c",
+        "headfile.h": "c",
+        "fsl_common.h": "c",
+        "zf_vector.h": "c"
+    }
+}

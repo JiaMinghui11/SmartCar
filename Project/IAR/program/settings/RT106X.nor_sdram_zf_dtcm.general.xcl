@@ -1,0 +1,17 @@
+"D:\Program Files\IAR\arm\bin\armproc.dll" 
+
+"D:\Program Files\IAR\arm\bin\armJET.dll" 
+
+"D:\STUDY\SmartCar\Demo\Project\IAR\program\nor_sdram_zf_dtcm\Exe\RT106X.out" 
+
+--plugin="D:\Program Files\IAR\arm\bin\armbat.dll" 
+
+--device_macro="D:\Program Files\IAR\arm\config\debugger\NXP\iMXRT.dmac" 
+
+--device_macro="D:\Program Files\IAR\arm\config\debugger\NXP\iMXRT_Trace.dmac" 
+
+--flash_loader="D:\Program Files\IAR\arm\config\flashloader\NXP\FlashIMXRT1064_SIP.board" 
+
+
+
+

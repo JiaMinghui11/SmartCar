@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "D:\\STUDY\\SmartCar\\Demo\\Libraries\\seekfree_peripheral",
+                "D:\\STUDY\\SmartCar\\Demo\\Libraries\\seekfree_libraries\\common",
+                "D:\\STUDY\\SmartCar\\Demo\\Libraries\\seekfree_libraries\\board",
+                "D:\\STUDY\\SmartCar\\Demo\\Libraries\\seekfree_libraries",
+                "D:\\STUDY\\SmartCar\\Demo\\Libraries\\nxp_libraries\\drives",
+                "D:\\Program Files\\GCC\\mingw64\\x86_64-w64-mingw32\\include",
+                "D:\\STUDY\\SmartCar\\Demo\\Project\\USER\\inc",
+                "${workspaceFolder}/Libraries/nxp_libraries/deceive",
+                "${workspaceFolder}/Libraries/nxp_libraries/utilities/debug_console",
+                "${workspaceFolder}/Libraries/nxp_libraries/components/serial_manager",
+                "${workspaceFolder}/Libraries/nxp_libraries/CMSIS/Include",
+                "${workspaceFolder}/Libraries/nxp_libraries/xip"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "intelliSenseMode": "${default}",
+            "compilerPath": "\"D:\\Program Files\\GCC\\mingw64\\bin\\x86_64-w64-mingw32-g++.exe\""
+        }
+    ],
+    "version": 4
+}
