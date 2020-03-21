@@ -1938,6 +1938,9 @@
     <group>
         <name>user_c</name>
         <file>
+            <name>$PROJ_DIR$\..\..\USER\src\camera.c</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\USER\src\driver.c</name>
         </file>
         <file>
@@ -1952,6 +1955,9 @@
     </group>
     <group>
         <name>user_h</name>
+        <file>
+            <name>$PROJ_DIR$\..\..\USER\inc\camera.h</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\..\..\USER\inc\driver.h</name>
         </file>

@@ -1,24 +1,6 @@
-/*********************************************************************************************************************
- * COPYRIGHT NOTICE
- * Copyright (c) 2019,逐飞科技
- * All rights reserved.
- * 技术讨论QQ群：一群：179029047(已满)  二群：244861897
- *
- * 以下所有内容版权均属逐飞科技所有，未经允许不得用于商业用途，
- * 欢迎各位使用并传播本程序，修改内容时必须保留逐飞科技的版权声明。
- *
- * @file       		isr
- * @company	   		成都逐飞科技有限公司
- * @author     		逐飞科技(QQ3184284598)
- * @version    		查看doc内version文件 版本说明
- * @Software 		IAR 8.3 or MDK 5.24
- * @Target core		NXP RT1064DVL6A
- * @Taobao   		https://seekfree.taobao.com/
- * @date       		2019-04-30
- ********************************************************************************************************************/
-
 #include "headfile.h"
 #include "driver.h"
+#include "camera.h"
 #include "init.h"
 #include "isr.h"
 
@@ -30,6 +12,7 @@ void CSI_IRQHandler(void)
 {
     CSI_DriverIRQHandler();     //调用SDK自带的中断函数 这个函数最后会调用我们设置的回调函数
     __DSB();                    //数据同步隔离
+    OTUS(mt9v03x_csi_image[0], MT9V03X_CSI_W, MT9V03X_CSI_H);
 }
 
 void PIT_IRQHandler(void)
@@ -40,6 +23,8 @@ void PIT_IRQHandler(void)
         get_speed();
         Sys.L_forward_duty += PIDcalc(&speedL_PID, Sys.speed_L);
         Sys.R_forward_duty += PIDcalc(&speedR_PID, Sys.speed_R);
+        if(Sys.L_forward_duty > 50000)  Sys.L_forward_duty = 50000;
+        if(Sys.R_forward_duty > 50000)  Sys.R_forward_duty = 50000;
         pwm_duty(MOTOR_L_FORWARD, Sys.L_forward_duty);
         pwm_duty(MOTOR_R_FORWARD, Sys.R_forward_duty);
     }

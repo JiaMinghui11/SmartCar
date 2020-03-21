@@ -1,11 +1,15 @@
 #include "driver.h"
 
-
 System Sys;
 PID speedL_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 100, 0, 0};
 PID speedR_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 100, 0, 0}; 
 PID servMotor_PID = {SERV_MOTOR_KP, SERV_MOTOR_KI, SERV_MOTOR_KD, 0, 0, 0};
 
+/**
+ * @brief       编码器速度采集
+ * @param       void
+ * @return      void
+ */
 void get_speed(void)
 {
     uint16 encoder_L, encoder_R;
@@ -26,12 +30,18 @@ void get_speed(void)
 }
 
 
-int16 PIDcalc(PID *p, uint16 getPoint)
+/**
+ * @brief       增量式PID计算
+ * @param       p           PID结构体指针
+ * @param       getPoint    PID控制器输入
+ * @return      out         PID计算输出量
+ */
+int16 PIDcalc(PID *p, int16 getPoint)
 {
     int16 Error;
     int16 out;
     Error = p->setPoint - getPoint;
-    if(Error < p->setPoint / 20)
+    if(Error < p->setPoint / 20 && Error > -p->setPoint / 20)
         out = 0;
     else
         out = (p->Kp * (Error - p->pre_error)

@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"D:\Program Files\IAR\common\bin\cspybat" -f "D:\STUDY\SmartCar\Demo\Project\IAR\program\settings\RT106X.nor_sdram_zf_dtcm.general.xcl" --backend -f "D:\STUDY\SmartCar\Demo\Project\IAR\program\settings\RT106X.nor_sdram_zf_dtcm.driver.xcl" 
+"D:\Program Files\IAR\common\bin\cspybat" -f "D:\STUDY\SmartCar\Demo\SmartCar\Project\IAR\program\settings\RT106X.nor_sdram_zf_dtcm.general.xcl" --backend -f "D:\STUDY\SmartCar\Demo\SmartCar\Project\IAR\program\settings\RT106X.nor_sdram_zf_dtcm.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"D:\Program Files\IAR\common\bin\cspybat" -f "D:\STUDY\SmartCar\Demo\Project\IAR\program\settings\RT106X.nor_sdram_zf_dtcm.general.xcl" "--debug_file=%~1" --backend -f "D:\STUDY\SmartCar\Demo\Project\IAR\program\settings\RT106X.nor_sdram_zf_dtcm.driver.xcl" 
+"D:\Program Files\IAR\common\bin\cspybat" -f "D:\STUDY\SmartCar\Demo\SmartCar\Project\IAR\program\settings\RT106X.nor_sdram_zf_dtcm.general.xcl" "--debug_file=%~1" --backend -f "D:\STUDY\SmartCar\Demo\SmartCar\Project\IAR\program\settings\RT106X.nor_sdram_zf_dtcm.driver.xcl" 
 
 @echo off 
 :end

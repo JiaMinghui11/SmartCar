@@ -26,19 +26,19 @@ typedef struct System
 {
     int16 speed_L;
     int16 speed_R;
-    uint16 L_forward_duty;
-    uint16 L_backward_duty;
-    uint16 R_forward_duty;
-    uint16 R_backward_duty;
-    uint16 servMotor_duty;
+    uint32 L_forward_duty;
+    uint32 L_backward_duty;
+    uint32 R_forward_duty;
+    uint32 R_backward_duty;
+    uint32 servMotor_duty;
 }System;
 
 typedef struct PID
 {
-    uint16 Kp;
-    uint16 Ki;
-    uint16 Kd;
-    uint16 setPoint;
+    int16 Kp;
+    int16 Ki;
+    int16 Kd;
+    int16 setPoint;
     int16 pre_error;
     int16 ppre_error;
 }PID;
