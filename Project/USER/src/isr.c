@@ -12,7 +12,6 @@ void CSI_IRQHandler(void)
 {
     CSI_DriverIRQHandler();     //调用SDK自带的中断函数 这个函数最后会调用我们设置的回调函数
     __DSB();                    //数据同步隔离
-    OTUS(mt9v03x_csi_image[0], MT9V03X_CSI_W, MT9V03X_CSI_H);
 }
 
 void PIT_IRQHandler(void)

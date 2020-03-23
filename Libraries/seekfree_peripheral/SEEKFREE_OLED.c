@@ -529,3 +529,32 @@ void oled_print_chinese(uint8 x, uint8 y, uint8 size, const uint8 *p, uint8 len)
     }
 }
 
+
+/**
+ * @brief		oled屏幕画线
+ * @param		line		线坐标数组
+ * @param		len			数组长度
+ * @return		void
+ */
+void oled_show_line(uint8* line, uint8 len)
+{
+	uint8 dat;
+	int16 temp1, temp;
+	int16 i, j;
+
+	temp1 = len % 8;
+	if(temp1 == 0)	temp = len / 8;
+	else 			temp = len / 8 + 1;
+
+	for(i = 0; i < temp; i++)
+	{
+		for(j = 0; j < 8; j++)
+		{
+			oled_set_pos(line[i*8+j], i);
+			dat = 0;
+			dat |= 1<<j;
+			dat = ~dat;
+			oled_wrdat(dat);
+		}
+	}
+}

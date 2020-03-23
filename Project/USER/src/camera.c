@@ -67,3 +67,79 @@ void OTUS(uint8 *image, uint16 col, uint16 row)
         } 
     }
 }
+
+
+int16 last_mid;
+int16 right_line[MT9V03X_CSI_H] = {MT9V03X_CSI_W - 1};
+int16 left_line[MT9V03X_CSI_H] = {0};
+int16 mid_line[MT9V03X_CSI_H] = {MT9V03X_CSI_W / 2};
+uint8 right_line_flag[MT9V03X_CSI_H] = {0};
+uint8 left_line_flag[MT9V03X_CSI_H] = {0};
+
+/**
+ * @brief       图像扫描
+ * @param       void
+ * @return      void
+ */
+void image_scan(void)
+{
+    mid_line[MT9V03X_CSI_H - 1] = MT9V03X_CSI_W / 2;        //底行默认取中
+    last_mid = MT9V03X_CSI_W / 2;
+    for(int row = MT9V03X_CSI_H-2; row >= 0; row--)
+    {
+        for(int col = last_mid; col < MT9V03X_CSI_W; col++) //从中间向右扫
+        {
+            if(mt9v03x_csi_image[row][col] < threshold)
+            {
+                right_line[row] = col;
+                right_line_flag[row] = 1;
+                //last_right = col;
+                break;
+            }
+        }//向右扫描完毕
+        
+        for(int col = last_mid; col >= 0; col--)            //从中间向左扫描
+        {
+            if(mt9v03x_csi_image[row][col] < threshold)
+            {
+                left_line[row] = col;
+                left_line_flag[row] = 1;
+                //last_left = col;
+                break;
+            }
+        }//向左扫描完毕
+        
+        //判断补线
+        if(right_line_flag[row] == 0 && left_line_flag[row] == 1)         //扫不到右边界
+        {
+            right_line[row] = right_line[row+1] + (left_line[row] - left_line[row+1]);
+        }
+        else if(right_line_flag[row] == 1 && left_line_flag[row] == 0)    //扫不到左边界
+        {
+            left_line[row] = left_line[row+1] + (right_line[row] - right_line[row+1]);
+        }
+        else if(right_line_flag[row] == 0 && left_line_flag[row] == 0)    //都扫不到
+        {
+            left_line[row] = 0;
+            right_line[row] = MT9V03X_CSI_W - 1; 
+        }
+
+        //提取中线
+        mid_line[row] = (left_line[row] + right_line[row]) / 2;
+
+        //中线限幅
+        if(mid_line[row] > MT9V03X_CSI_W - 1)   mid_line[row] = MT9V03X_CSI_W - 1;
+        else if(mid_line[row] < 0)              mid_line[row] = 0;
+        
+        //中线滤波
+        if(row < MT9V03X_CSI_H - 30)
+        {   if(mid_line[row] - mid_line[row+1] > 4 && mid_line[row+1] < MT9V03X_CSI_W-1)         
+                mid_line[row] = mid_line[row+1] + 1;
+            else if(mid_line[row] - mid_line[row+1] < -4 && mid_line[row+1] > 0)   
+                mid_line[row] = mid_line[row+1] - 1;
+        }   
+
+        //更新中点
+        last_mid = mid_line[row];         
+    }
+}

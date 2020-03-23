@@ -83,6 +83,7 @@ void oled_printf_int32(uint16 x,uint16 y,int32 dat,uint8 num);
 void oled_printf_float(uint16 x,uint16 y,double dat,uint8 num,uint8 pointnum);
 void oled_dis_bmp(uint16 high, uint16 width, uint8 *p,uint8 value);
 void oled_print_chinese(uint8 x, uint8 y, uint8 size, const uint8 *p, uint8 len);
+void oled_show_line(uint8* line, uint8 len);
 
 
 /********************************************************************/

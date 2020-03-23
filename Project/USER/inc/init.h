@@ -22,6 +22,10 @@
 #define ENCODER_R_COUNT     QTIMER2_TIMER0_C3       //右编码器计数引脚
 #define ENCODER_R_DIR       QTIMER2_TIMER3_C25      //右编码器方向引脚
 
+//宏定义辅助调试模块使能
+#define OLED_ENABLE         1                       //OLED屏幕使能
+#define WIRELESS_ENABLE     1                       //无线转串口模块使能
+
 typedef struct System
 {
     int16 speed_L;

@@ -59,7 +59,8 @@ void init(void)
     pit_init();
 
     //辅助调试模块初始化
-    oled_init();
+    if(OLED_ENABLE)         oled_init();
+    if(WIRELESS_ENABLE)     seekfree_wireless_init();
 
     //控制相关初始化
     mt9v03x_csi_init();
