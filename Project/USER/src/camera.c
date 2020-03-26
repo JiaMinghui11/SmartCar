@@ -69,10 +69,10 @@ void OTUS(uint8 *image, uint16 col, uint16 row)
 }
 
 
-int16 last_mid;
-int16 right_line[MT9V03X_CSI_H] = {MT9V03X_CSI_W - 1};
-int16 left_line[MT9V03X_CSI_H] = {0};
-int16 mid_line[MT9V03X_CSI_H] = {MT9V03X_CSI_W / 2};
+int16 last_mid = MT9V03X_CSI_W / 2;
+int16 right_line[MT9V03X_CSI_H];
+int16 left_line[MT9V03X_CSI_H];
+int16 mid_line[MT9V03X_CSI_H];
 uint8 right_line_flag[MT9V03X_CSI_H] = {0};
 uint8 left_line_flag[MT9V03X_CSI_H] = {0};
 
@@ -83,7 +83,7 @@ uint8 left_line_flag[MT9V03X_CSI_H] = {0};
  */
 void image_scan(void)
 {
-    mid_line[MT9V03X_CSI_H - 1] = MT9V03X_CSI_W / 2;        //底行默认取中
+    mid_line[MT9V03X_CSI_H - 1] = MT9V03X_CSI_W / 2;        
     last_mid = MT9V03X_CSI_W / 2;
     for(int row = MT9V03X_CSI_H-2; row >= 0; row--)
     {
@@ -140,6 +140,98 @@ void image_scan(void)
         }   
 
         //更新中点
-        last_mid = mid_line[row];         
+        last_mid = mid_line[row];
+
+        if(LCD_ENABLE)
+        {
+            lcd_drawpoint(mid_line[row], row, RED);
+            if(left_line[row] >= 0)
+                lcd_drawpoint(left_line[row], row, GREEN);
+            if(right_line[row] < MT9V03X_CSI_W - 1)
+                lcd_drawpoint(right_line[row], row, BLUE);
+        }         
+    }
+}
+
+
+/**
+ * @brief       差比和找边界
+ * @param       void
+ * @return      void
+ */
+void find_line(void)
+{
+    last_mid = MT9V03X_CSI_W / 2;
+    left_line[MT9V03X_CSI_H-1] = 0;
+    right_line[MT9V03X_CSI_H-1] = MT9V03X_CSI_W-1;
+    for(int16 row = MT9V03X_CSI_H-2; row >= 0; row--)
+    {
+
+        //从中间向右扫
+        for(int16 col = last_mid; col <= MT9V03X_CSI_W-1-5; col++)
+        {
+            if(ABS(mt9v03x_csi_image[row][col]-mt9v03x_csi_image[row][col+5])*100 / 
+                (mt9v03x_csi_image[row][col]+mt9v03x_csi_image[row][col+5]) > THRESHOLD)
+                {
+                    right_line[row] = col + 5;
+                    right_line_flag[row] = 1;
+                    break;
+                }
+        }
+
+        //从中间向左扫
+        for(int16 col = last_mid; col >= 5; col--)
+        {
+            if(ABS(mt9v03x_csi_image[row][col]-mt9v03x_csi_image[row][col-5])*100 / 
+                (mt9v03x_csi_image[row][col]+mt9v03x_csi_image[row][col-5]) > THRESHOLD)
+                {
+                    left_line[row] = col - 5;
+                    left_line_flag[row] = 1;
+                    break;
+                }
+        }
+
+        //判断补线
+        if(right_line_flag[row] == 0 && left_line_flag[row] == 1)         //扫不到右边界
+        {
+            right_line[row] = right_line[row+1] + (left_line[row] - left_line[row+1]);
+        }
+        else if(right_line_flag[row] == 1 && left_line_flag[row] == 0)    //扫不到左边界
+        {
+            left_line[row] = left_line[row+1] + (right_line[row] - right_line[row+1]);
+        }
+        else if(right_line_flag[row] == 0 && left_line_flag[row] == 0)    //都扫不到
+        {
+            left_line[row] = 0;
+            right_line[row] = MT9V03X_CSI_W - 1; 
+        }
+
+        //提取中线
+        mid_line[row] = (left_line[row] + right_line[row]) / 2;
+
+        //中线限幅
+        if(mid_line[row] > MT9V03X_CSI_W - 1)   mid_line[row] = MT9V03X_CSI_W - 1;
+        else if(mid_line[row] < 0)              mid_line[row] = 0;  
+
+        //中线滤波
+        if(row < MT9V03X_CSI_H - 30)
+        {   if(mid_line[row] - mid_line[row+1] > 4 && mid_line[row+1] < MT9V03X_CSI_W-1)         
+                mid_line[row] = mid_line[row+1] + 1;
+            else if(mid_line[row] - mid_line[row+1] < -4 && mid_line[row+1] > 0)   
+                mid_line[row] = mid_line[row+1] - 1;
+        }   
+
+        //更新中点
+        last_mid = mid_line[row];
+
+        //画线
+        if(LCD_ENABLE)
+        {
+            lcd_drawpoint(mid_line[row], row, RED);
+            if(left_line[row] > 0)
+                lcd_drawpoint(left_line[row], row, GREEN);
+            if(right_line[row] < MT9V03X_CSI_W - 1)
+                lcd_drawpoint(right_line[row], row, YELLOW);
+        }                    
     }
 }

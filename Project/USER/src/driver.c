@@ -1,8 +1,8 @@
 #include "driver.h"
 
 System Sys;
-PID speedL_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 100, 0, 0};
-PID speedR_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 100, 0, 0}; 
+PID speedL_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 180, 0, 0};
+PID speedR_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 180, 0, 0}; 
 PID servMotor_PID = {SERV_MOTOR_KP, SERV_MOTOR_KI, SERV_MOTOR_KD, 0, 0, 0};
 
 /**

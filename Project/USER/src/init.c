@@ -60,6 +60,7 @@ void init(void)
 
     //辅助调试模块初始化
     if(OLED_ENABLE)         oled_init();
+    if(LCD_ENABLE)          lcd_init();
     if(WIRELESS_ENABLE)     seekfree_wireless_init();
 
     //控制相关初始化

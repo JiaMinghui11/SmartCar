@@ -23,8 +23,9 @@
 #define ENCODER_R_DIR       QTIMER2_TIMER3_C25      //右编码器方向引脚
 
 //宏定义辅助调试模块使能
-#define OLED_ENABLE         1                       //OLED屏幕使能
-#define WIRELESS_ENABLE     1                       //无线转串口模块使能
+#define OLED_ENABLE         0                       //OLED屏幕使能
+#define LCD_ENABLE          1                       //1.8寸屏幕使能
+#define WIRELESS_ENABLE     0                       //无线转串口模块使能
 
 typedef struct System
 {
