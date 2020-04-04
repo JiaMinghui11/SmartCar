@@ -1,8 +1,10 @@
 #include "driver.h"
 
+extern int16 mid_line[MT9V03X_CSI_H];
+
 System Sys;
-PID speedL_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 180, 0, 0};
-PID speedR_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 180, 0, 0}; 
+PID speedL_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 150, 0, 0};
+PID speedR_PID = {SPEED_KP, SPEED_KI, SPEED_KD, 150, 0, 0}; 
 PID servMotor_PID = {SERV_MOTOR_KP, SERV_MOTOR_KI, SERV_MOTOR_KD, 0, 0, 0};
 
 /**
@@ -50,4 +52,24 @@ int16 PIDcalc(PID *p, int16 getPoint)
     p->ppre_error = p->pre_error;
     p->pre_error = Error;
     return out;
+}
+
+
+/**
+ * @brief       舵机控制
+ * @param       void
+ * @return      void
+ */
+void servMoter_control(void)
+{
+    int16 error = 0;
+    error = mid_line[105] - MT9V03X_CSI_W/2;
+
+    int16 out = PIDcalc(&servMotor_PID, error);
+    if(out < 10 && out > -10)   Sys.servMotor_duty += 0;
+    else                        Sys.servMotor_duty += out;
+
+    if(Sys.servMotor_duty > 3900)   Sys.servMotor_duty = 3900;
+    if(Sys.servMotor_duty < 3300)   Sys.servMotor_duty = 3300;
+    pwm_duty(SERVE_MOTOR_PIN, Sys.servMotor_duty);
 }

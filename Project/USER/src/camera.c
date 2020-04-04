@@ -164,7 +164,7 @@ void find_line(void)
     last_mid = MT9V03X_CSI_W / 2;
     left_line[MT9V03X_CSI_H-1] = 0;
     right_line[MT9V03X_CSI_H-1] = MT9V03X_CSI_W-1;
-    for(int16 row = MT9V03X_CSI_H-2; row >= 0; row--)
+    for(int16 row = MT9V03X_CSI_H-2; row >= MT9V03X_CSI_H-80; row--)    //只采集前80行
     {
 
         //从中间向右扫

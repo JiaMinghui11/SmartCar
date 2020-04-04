@@ -57,6 +57,7 @@ void init(void)
 {
     //单片机外设初始化
     pit_init();
+    pit_interrupt_ms(PIT_CH1, 10);
 
     //辅助调试模块初始化
     if(OLED_ENABLE)         oled_init();

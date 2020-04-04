@@ -28,7 +28,7 @@
         <EnableCache>1</EnableCache>
     </ArmDriver>
     <DebugChecksum>
-        <Checksum>1410183014</Checksum>
+        <Checksum>2488902457</Checksum>
     </DebugChecksum>
     <Exceptions>
         <StopOnUncaught>_ 0</StopOnUncaught>
@@ -44,8 +44,8 @@
     <SWOManager>
         <SamplingDivider>8192</SamplingDivider>
         <OverrideClock>0</OverrideClock>
-        <CpuClock>1600416118</CpuClock>
-        <SwoClock>825569891</SwoClock>
+        <CpuClock>0</CpuClock>
+        <SwoClock>0</SwoClock>
         <DataLogMode>0</DataLogMode>
         <ItmPortsEnabled>63</ItmPortsEnabled>
         <ItmTermIOPorts>1</ItmTermIOPorts>
@@ -184,7 +184,8 @@
     </Breakpoints2>
     <Aliases>
         <A0>_ "D:\STUDY\SmartCar\Demo\Libraries\nxp_libraries\components\uart\lpuart_adapter.c" ""</A0>
-        <Count>1</Count>
+        <A1>_ "D:\STUDY\SmartCar\Demo\Libraries\seekfree_libraries\zf_vector.c" ""</A1>
+        <Count>2</Count>
         <SuppressDialog>0</SuppressDialog>
     </Aliases>
 </settings>

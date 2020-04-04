@@ -18,18 +18,25 @@ void PIT_IRQHandler(void)
 {
     if(PIT_FLAG_GET(PIT_CH0))   
     {
-        PIT_FLAG_CLEAR(PIT_CH0);
         get_speed();
         Sys.L_forward_duty += PIDcalc(&speedL_PID, Sys.speed_L);
         Sys.R_forward_duty += PIDcalc(&speedR_PID, Sys.speed_R);
-        if(Sys.L_forward_duty > 50000)  Sys.L_forward_duty = 50000;
-        if(Sys.R_forward_duty > 50000)  Sys.R_forward_duty = 50000;
+        if(Sys.L_forward_duty > 15000)  Sys.L_forward_duty = 15000;
+        if(Sys.R_forward_duty > 15000)  Sys.R_forward_duty = 15000;
         pwm_duty(MOTOR_L_FORWARD, Sys.L_forward_duty);
         pwm_duty(MOTOR_R_FORWARD, Sys.R_forward_duty);
+        PIT_FLAG_CLEAR(PIT_CH0);
     }
     
     if(PIT_FLAG_GET(PIT_CH1))
     {
+        if(mt9v03x_csi_finish_flag)
+        {
+            find_line();                //寻找中线
+            servMoter_control();        //舵机控制
+            //lcd_displayimage032_zoom(mt9v03x_csi_image[0], MT9V03X_CSI_W, MT9V03X_CSI_H, MT9V03X_CSI_W, MT9V03X_CSI_H);
+            mt9v03x_csi_finish_flag = 0;
+        }
         PIT_FLAG_CLEAR(PIT_CH1);
     }
     
