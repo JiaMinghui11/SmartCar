@@ -1,7 +1,13 @@
 #include "camera.h"
+#include "driver.h"
+#include "config.h"
 
-uint8 threshold;    //图像动态阈值
+static void find_line(int16 *mid_line);
+static void image_scan(int16 *mid_line, uint8 threshold);
+static void image_scan(int16 *mid_line, uint8 threshold);
 
+
+#ifdef USE_OTUS
 /**
  * @brief       大津法计算动态阈值
  * @param       image
@@ -9,8 +15,10 @@ uint8 threshold;    //图像动态阈值
  * @param       row
  * @return      void
  */
-void OTUS(uint8 *image, uint16 col, uint16 row) 
-{       
+uint8 OTUS(uint8 *image, uint16 col, uint16 row) 
+{ 
+    uint8 threshold;
+
     uint16 x0 = 0;              //处理起始行
     uint16 y0 = 0;              //处理起始列
     uint16 x1 = MT9V03X_CSI_H;  //处理终止行
@@ -62,29 +70,34 @@ void OTUS(uint8 *image, uint16 col, uint16 row)
         //float g=(float)(w0*w1*(u0-u1)*(u0-u1));    
         if(gmax<g)
         {
-            gmax=g;
-            threshold=i;
+            gmax = g;
+            threshold = i;
         } 
     }
+    return threshold;
 }
+#endif
 
 
-int16 last_mid = MT9V03X_CSI_W / 2;
-int16 right_line[MT9V03X_CSI_H];
-int16 left_line[MT9V03X_CSI_H];
-int16 mid_line[MT9V03X_CSI_H];
-uint8 right_line_flag[MT9V03X_CSI_H] = {0};
-uint8 left_line_flag[MT9V03X_CSI_H] = {0};
+#ifdef USE_OTUS
 
 /**
  * @brief       图像扫描
  * @param       void
  * @return      void
  */
-void image_scan(void)
+static void image_scan(int16 *mid_line, uint8 threshold)
 {
+    int16 right_line[MT9V03X_CSI_H];
+    int16 left_line[MT9V03X_CSI_H];
+    uint8 right_line_flag[MT9V03X_CSI_H] = {0};
+    uint8 left_line_flag[MT9V03X_CSI_H] = {0};
+
+    int16 last_mid = MT9V03X_CSI_W / 2;
+    left_line[MT9V03X_CSI_H-1] = 0;
+    right_line[MT9V03X_CSI_H-1] = MT9V03X_CSI_W-1;
     mid_line[MT9V03X_CSI_H - 1] = MT9V03X_CSI_W / 2;        
-    last_mid = MT9V03X_CSI_W / 2;
+
     for(int row = MT9V03X_CSI_H-2; row >= 0; row--)
     {
         for(int col = last_mid; col < MT9V03X_CSI_W; col++) //从中间向右扫
@@ -142,26 +155,31 @@ void image_scan(void)
         //更新中点
         last_mid = mid_line[row];
 
-        if(LCD_ENABLE)
-        {
-            lcd_drawpoint(mid_line[row], row, RED);
-            if(left_line[row] >= 0)
-                lcd_drawpoint(left_line[row], row, GREEN);
-            if(right_line[row] < MT9V03X_CSI_W - 1)
-                lcd_drawpoint(right_line[row], row, BLUE);
-        }         
+    #if LCD_ENABLE
+        lcd_drawpoint(mid_line[row], row, RED);
+        if(left_line[row] >= 0)
+            lcd_drawpoint(left_line[row], row, GREEN);
+        if(right_line[row] < MT9V03X_CSI_W - 1)
+            lcd_drawpoint(right_line[row], row, BLUE);
+    #endif       
     }
 }
+#endif
 
 
 /**
  * @brief       差比和找边界
- * @param       void
+ * @param       mid_line        储存中线的数组
  * @return      void
  */
-void find_line(void)
-{
-    last_mid = MT9V03X_CSI_W / 2;
+static void find_line(int16 *mid_line)
+{ 
+    int16 right_line[MT9V03X_CSI_H];
+    int16 left_line[MT9V03X_CSI_H];
+    uint8 right_line_flag[MT9V03X_CSI_H] = {0};
+    uint8 left_line_flag[MT9V03X_CSI_H] = {0};
+
+    int16 last_mid = MT9V03X_CSI_W / 2;
     left_line[MT9V03X_CSI_H-1] = 0;
     right_line[MT9V03X_CSI_H-1] = MT9V03X_CSI_W-1;
     for(int16 row = MT9V03X_CSI_H-2; row >= MT9V03X_CSI_H-80; row--)    //只采集前80行
@@ -225,13 +243,32 @@ void find_line(void)
         last_mid = mid_line[row];
 
         //画线
-        if(LCD_ENABLE)
-        {
-            lcd_drawpoint(mid_line[row], row, RED);
-            if(left_line[row] > 0)
-                lcd_drawpoint(left_line[row], row, GREEN);
-            if(right_line[row] < MT9V03X_CSI_W - 1)
-                lcd_drawpoint(right_line[row], row, YELLOW);
-        }                    
+    #if LCD_ENABLE
+        lcd_drawpoint(mid_line[row], row, RED);
+        if(left_line[row] >= 0)
+            lcd_drawpoint(left_line[row], row, GREEN);
+        if(right_line[row] < MT9V03X_CSI_W - 1)
+            lcd_drawpoint(right_line[row], row, BLUE);
+    #endif                     
     }
+}
+
+
+/**
+ * @brief       转向控制
+ * @param       void
+ * @return      void
+ */
+void direct_control(void)
+{
+    int16 mid_line[MT9V03X_CSI_H];
+
+#ifdef USE_OTUS
+    uint8 threshold = OTUS(mt9v03x_csi_image[0], IMAGE_W, IMAGE_H);
+    image_scan(mid_line, threshold);
+#else
+    find_line(mid_line);            //寻找中线
+#endif
+    
+    servMoter_control(mid_line);    //舵机控制
 }

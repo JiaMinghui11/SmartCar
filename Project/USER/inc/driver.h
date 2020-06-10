@@ -4,18 +4,30 @@
 #include "headfile.h"
 #include "init.h"
 
-//速度PID系数
-#define SPEED_KP    100
-#define SPEED_KI    5
-#define SPEED_KD    0
+typedef struct System_t
+{
+    int16 speed_L;
+    int16 speed_R;
+    uint32 L_forward_duty;
+    uint32 L_backward_duty;
+    uint32 R_forward_duty;
+    uint32 R_backward_duty;
+    uint32 servMotor_duty;
+}System_t;
 
-//转向PID系数
-#define SERV_MOTOR_KP   200
-#define SERV_MOTOR_KI   0
-#define SERV_MOTOR_KD   200
+typedef struct PID_t
+{
+    int16 Kp;
+    int16 Ki;
+    int16 Kd;
+    int16 setPoint;
+    int16 pre_error;
+    int16 ppre_error;
+}PID_t;
 
-void get_speed(void);
-int16 PIDcalc(PID *p, int16 getPoint);
-void servMoter_control(void);
+void encoder_init(void);
+void motor_init(void);
+void servMoter_control(const int16 *mid_line);
+void speed_control(void);
 
 #endif

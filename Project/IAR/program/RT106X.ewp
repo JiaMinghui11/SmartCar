@@ -1844,6 +1844,9 @@
             <name>$PROJ_DIR$\..\..\USER\inc\camera.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\..\..\USER\inc\config.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\..\..\USER\inc\driver.h</name>
         </file>
         <file>
